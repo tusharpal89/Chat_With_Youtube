@@ -23,13 +23,25 @@ class IngestError(Exception):
     pass
 
 
+# YouTube often blocks the default "web" client from datacenter IPs
+# ("Failed to extract any player response"). Alternative player clients
+# (ios / tv) frequently work. Override the list via YTDLP_PLAYER_CLIENTS.
+_PLAYER_CLIENTS = [
+    c.strip() for c in os.getenv("YTDLP_PLAYER_CLIENTS", "ios,tv,web").split(",") if c.strip()
+]
+_YTDLP_EXTRACTOR_ARGS = {"youtube": {"player_client": _PLAYER_CLIENTS}}
+
+
 def _extract_info(url: str) -> dict:
     try:
         import yt_dlp
     except ImportError as e:  # pragma: no cover
         raise IngestError("yt-dlp is not installed. Run: pip install yt-dlp") from e
 
-    opts = {"quiet": True, "no_warnings": True, "skip_download": True, "noprogress": True}
+    opts = {
+        "quiet": True, "no_warnings": True, "skip_download": True, "noprogress": True,
+        "extractor_args": _YTDLP_EXTRACTOR_ARGS,
+    }
     try:
         with yt_dlp.YoutubeDL(opts) as ydl:
             return ydl.extract_info(url, download=False)
@@ -181,6 +193,7 @@ def _download_audio(url: str, out_dir: str, fmt: str = "bestaudio/best") -> str:
         "quiet": True,
         "no_warnings": True,
         "noprogress": True,
+        "extractor_args": _YTDLP_EXTRACTOR_ARGS,
     }
     with yt_dlp.YoutubeDL(opts) as ydl:
         info = ydl.extract_info(url, download=True)
