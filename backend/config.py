@@ -13,8 +13,8 @@ def _get_bool(name: str, default: str = "true") -> bool:
 @dataclass(frozen=True)
 class Settings:
     # --- LLM ---
-    LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "gemini").strip().lower()
-    LLM_MODEL: str = os.getenv("LLM_MODEL", "gemini-3.8-flash")
+    LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "groq").strip().lower()
+    LLM_MODEL: str = os.getenv("LLM_MODEL", "openai/gpt-oss-120b")
     LLM_BASE_URL: str = os.getenv("LLM_BASE_URL", "").strip()
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", os.getenv("GOOGLE_API_KEY", ""))
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")

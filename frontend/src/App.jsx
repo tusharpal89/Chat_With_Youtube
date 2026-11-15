@@ -5,7 +5,8 @@ import {
   NotebookPen, Play, ScrollText, Search, Send, Sparkles, Users, X, Youtube,
 } from 'lucide-react'
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+// Production build (served by the backend) -> same-origin "/api"; dev -> backend dev server.
+const API = import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || 'http://localhost:8000')
 
 const TABS = [
   ['summary', 'Summary', FileText],
